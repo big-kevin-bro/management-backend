@@ -1,0 +1,37 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: management-backend
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/my_db?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=UTC
+    username: root
+    password: 123456
+    druid:
+      filters: stat,wall,log4j # 指定过滤器，例如开启监控统计功能，防SQL注入等
+      max-active: 10 # 连接池最大连接数
+      initial-size: 1 # 初始化连接数
+      min-idle: 1 # 连接池最小空闲连接数
+      max-wait: 60000 # 获取连接时最大等待时间，单位毫秒
+      time-between-eviction-runs-millis: 60000 # 连接保持空闲而不被驱逐的时间，单位毫秒
+      min-evictable-idle-time-millis: 300000 # 连接最小生存时间，单位毫秒
+      validation-query: select 1 # 测试连接是否有效的SQL
+      test-while-idle: true # 是否开启空闲检测
+      test-on-borrow: false # 是否在获取连接时进行检测
+      test-on-return: false # 是否在归还连接时进行检测
+      max-open-prepared-statements: 20 # 指定连接池缓存的PreparedStatement最大数量
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000 # 设置连接属性
+      use-global-data-source-stat: true # 是否开启全局统计监控
+      remove-abandoned: true # 是否开启自动回收长时间不使用的连接
+      remove-abandoned-timeout: 1800 # 超过该时间的连接会被自动回收，单位秒
+      log-abandoned: true # 是否打印回收的日志信息
+logging:
+  config: classpath:logback-spring.xml
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: disable # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
+      logic-delete-value: 1 # 逻辑已删除值(默认为 1)
+      logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
