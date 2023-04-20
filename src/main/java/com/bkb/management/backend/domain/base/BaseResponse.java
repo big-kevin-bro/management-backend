@@ -16,7 +16,6 @@ public class BaseResponse<T, V> implements Serializable {
     private V extend;
     private String debugMessage;
     private String debugTrace;
-    private String requestId;
 
     public BaseResponse() {
     }
@@ -84,6 +83,6 @@ public class BaseResponse<T, V> implements Serializable {
     }
 
     public static <T, V> BaseResponse<T, V> fail(String code, String message, String debugMessage) {
-        return new BaseResponse(false, code, message, null, null, debugMessage);
+        return new BaseResponse<>(false, code, message, null, null, debugMessage);
     }
 }
