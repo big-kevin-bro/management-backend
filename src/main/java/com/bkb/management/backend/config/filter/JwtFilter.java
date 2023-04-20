@@ -12,10 +12,12 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
+ * JWT过滤器，拦截所有的请求
+ *
  * @author big kevin bro
  */
 @Slf4j
-@WebFilter(filterName = "JwtFilter", urlPatterns = "/secure/*")
+@WebFilter(filterName = "JwtFilter", urlPatterns = "/api/*")
 public class JwtFilter implements Filter {
 
     @Override
@@ -31,7 +33,7 @@ public class JwtFilter implements Filter {
         final HttpServletResponse response = (HttpServletResponse) res;
 
         response.setCharacterEncoding("UTF-8");
-        //获取 header里的token
+        // 获取 header里的token
         final String token = request.getHeader("authorization");
 
         if ("OPTIONS".equals(request.getMethod())) {
@@ -40,7 +42,6 @@ public class JwtFilter implements Filter {
         }
         // Except OPTIONS, other request should be checked by JWT
         else {
-
             if (token == null) {
                 response.getWriter().write("没有token！");
                 return;

@@ -17,15 +17,21 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @Api(tags = "登录")
-@RequestMapping("/login")
+@RequestMapping("/sign")
 public class LoginController {
 
     @Resource
     private LoginUserInfoService loginUserInfoService;
 
-    @PostMapping("")
+    @PostMapping("/up")
+    @ApiOperation("用户注册")
+    public BaseResponse<Boolean, ?> signUp(LoginUserVO vo) {
+        return loginUserInfoService.signUp(vo);
+    }
+
+    @PostMapping("/in")
     @ApiOperation("用户登录")
-    public BaseResponse<String, ?> login(LoginUserVO vo) {
+    public BaseResponse<String, ?> signIn(LoginUserVO vo) {
         LoginUserInfoDO loginUserInfo = loginUserInfoService.getByUserName(vo.getUserName());
         if (loginUserInfo == null) {
             return BaseResponse.fail("401", "用户未注册");
