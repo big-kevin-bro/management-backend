@@ -30,16 +30,7 @@ public class LoginController {
     @PostMapping("/in")
     @ApiOperation("用户登录")
     public BaseResponse<String, ?> signIn(LoginUserVO vo) {
-        LoginUserInfoDO loginUserInfo = loginUserInfoService.getByUserName(vo.getUserName());
-        if (loginUserInfo == null) {
-            return BaseResponse.fail("401", "用户未注册");
-        }
-        if (loginUserInfo.getPassword().equals(vo.getPassword())) {
-            String token = JwtUtil.createToken(loginUserInfo);
-            return BaseResponse.success(token);
-        } else {
-            return BaseResponse.fail("401", "登录密码错误");
-        }
+        return loginUserInfoService.signIn(vo);
     }
 
     @GetMapping("/test")

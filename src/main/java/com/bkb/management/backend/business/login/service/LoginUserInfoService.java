@@ -10,11 +10,11 @@ import com.bkb.management.backend.domain.vo.login.LoginUserVO;
  * @author big kevin bro
  */
 public interface LoginUserInfoService extends IService<LoginUserInfoDO> {
-    LoginUserInfoDO getByUserName(String userName);
-
     BaseResponse<Boolean, ?> signUp(LoginUserVO vo);
 
     LoginUserInfoDTO getUserInfoByToken();
 
     BaseResponse<String,?> test(String password);
+
+    BaseResponse<String,?> signIn(LoginUserVO vo);
 }

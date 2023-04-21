@@ -7,4 +7,5 @@ import com.bkb.management.backend.domain.model.rsa.UserRsaInfoDO;
  * @author big kevin bro
  */
 public interface UserRsaInfoService extends IService<UserRsaInfoDO> {
+    UserRsaInfoDO getByUserId(String userId);
 }

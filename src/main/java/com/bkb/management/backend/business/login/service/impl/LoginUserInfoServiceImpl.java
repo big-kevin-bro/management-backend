@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bkb.management.backend.business.login.service.LoginUserInfoService;
 import com.bkb.management.backend.business.rsa.service.UserRsaInfoService;
 import com.bkb.management.backend.config.props.AppProps;
+import com.bkb.management.backend.config.props.RsaProps;
+import com.bkb.management.backend.config.utils.JwtUtil;
 import com.bkb.management.backend.config.utils.RsaUtils;
 import com.bkb.management.backend.domain.base.BaseResponse;
 import com.bkb.management.backend.domain.dto.login.LoginUserInfoDTO;
@@ -35,17 +37,6 @@ public class LoginUserInfoServiceImpl extends ServiceImpl<LoginUserInfoMapper, L
 
     @Resource
     private UserRsaInfoService userRsaInfoService;
-
-    /**
-     * @param userName 用户名
-     * @return 登录用户信息
-     */
-    @Override
-    public LoginUserInfoDO getByUserName(String userName) {
-        LambdaQueryWrapper<LoginUserInfoDO> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(LoginUserInfoDO::getUserName, userName);
-        return getOne(wrapper);
-    }
 
     /**
      * @param vo 入参
@@ -107,5 +98,46 @@ public class LoginUserInfoServiceImpl extends ServiceImpl<LoginUserInfoMapper, L
     @Override
     public BaseResponse<String, ?> test(String password) {
         return BaseResponse.success(RsaUtils.encrypt(password, appProps.getRsa().getPublicKey()));
+    }
+
+    @Override
+    public BaseResponse<String, ?> signIn(LoginUserVO vo) {
+        LoginUserInfoDO loginUserInfo = this.getByUserName(vo.getUserName());
+        if (loginUserInfo == null) {
+            return BaseResponse.fail("401", "用户未注册");
+        }
+        RsaProps rsaProps = appProps.getRsa();
+        // 参数密码解密
+        String passwordParam = RsaUtils.decrypt(vo.getPassword(), rsaProps.getPrivateKey());
+        if (StringUtils.isBlank(passwordParam)) {
+            return BaseResponse.fail("500", "登录失败");
+        }
+        // 数据库密码解密
+        String passwordDb = this.getPasswordDb(loginUserInfo.getId(), loginUserInfo.getPassword());
+        if (passwordParam.equals(passwordDb)) {
+            String token = JwtUtil.createToken(loginUserInfo);
+            return BaseResponse.success(token);
+        } else {
+            return BaseResponse.fail("401", "登录密码错误");
+        }
+    }
+
+    /**
+     * @param userName 用户名
+     * @return 登录用户信息
+     */
+    private LoginUserInfoDO getByUserName(String userName) {
+        LambdaQueryWrapper<LoginUserInfoDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(LoginUserInfoDO::getUserName, userName);
+        return getOne(wrapper);
+    }
+
+    private String getPasswordDb(String userId, String password) {
+        // 查询用户的rsa秘钥对
+        UserRsaInfoDO userRsaInfo = userRsaInfoService.getByUserId(userId);
+        if (userRsaInfo == null) {
+            return null;
+        }
+        return RsaUtils.decrypt(password, userRsaInfo.getPrivateKey());
     }
 }
