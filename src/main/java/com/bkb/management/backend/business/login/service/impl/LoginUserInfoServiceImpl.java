@@ -71,9 +71,12 @@ public class LoginUserInfoServiceImpl extends ServiceImpl<LoginUserInfoMapper, L
         if (StringUtils.isBlank(userId)) {
             return null;
         }
-        LoginUserInfoDO userInfo = this.getById(userId);
+        LoginUserInfoDO loginUserInfo = this.getById(userId);
+        if (loginUserInfo == null) {
+            return null;
+        }
         LoginUserInfoDTO dto = new LoginUserInfoDTO();
-        BeanUtil.copyProperties(userInfo, dto);
+        BeanUtil.copyProperties(loginUserInfo, dto);
         return dto;
     }
 

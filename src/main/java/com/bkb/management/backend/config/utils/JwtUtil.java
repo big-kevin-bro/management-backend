@@ -6,6 +6,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.bkb.management.backend.domain.model.login.LoginUserInfoDO;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -58,8 +59,10 @@ public class JwtUtil {
     public static Map<String, Claim> verifyToken(String token) {
         DecodedJWT jwt;
         try {
+            // 去除Bearer
+            String substring = token.substring(7);
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
-            jwt = verifier.verify(token);
+            jwt = verifier.verify(substring);
             // decodedJWT.getClaim("属性").asString()  获取负载中的属性值
         } catch (Exception e) {
             // 解码异常则抛出异常
@@ -67,5 +70,13 @@ public class JwtUtil {
             return null;
         }
         return jwt.getClaims();
+    }
+
+    public static String getUserIdByToken(String token) {
+        if(StringUtils.isBlank(token)) {
+            return null;
+        }
+        DecodedJWT jwt = JWT.decode(token);
+        return jwt.getClaims().get("id").asString();
     }
 }

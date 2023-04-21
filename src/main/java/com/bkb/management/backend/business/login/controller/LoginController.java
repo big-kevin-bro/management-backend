@@ -1,9 +1,7 @@
 package com.bkb.management.backend.business.login.controller;
 
 import com.bkb.management.backend.business.login.service.LoginUserInfoService;
-import com.bkb.management.backend.config.utils.JwtUtil;
 import com.bkb.management.backend.domain.base.BaseResponse;
-import com.bkb.management.backend.domain.model.login.LoginUserInfoDO;
 import com.bkb.management.backend.domain.vo.login.LoginUserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -29,7 +27,7 @@ public class LoginController {
 
     @PostMapping("/in")
     @ApiOperation("用户登录")
-    public BaseResponse<String, ?> signIn(LoginUserVO vo) {
+    public BaseResponse<String, ?> signIn(@RequestBody LoginUserVO vo) {
         return loginUserInfoService.signIn(vo);
     }
 
