@@ -1,7 +1,9 @@
 package com.bkb.management.backend.business.user.controller;
 
+import com.bkb.management.backend.business.login.service.LoginUserInfoService;
 import com.bkb.management.backend.business.user.service.UserInfoService;
 import com.bkb.management.backend.domain.base.BaseResponse;
+import com.bkb.management.backend.domain.dto.login.LoginUserInfoDTO;
 import com.bkb.management.backend.domain.dto.user.UserInfoDTO;
 import com.bkb.management.backend.domain.vo.user.UserInfoVO;
 import io.swagger.annotations.Api;
@@ -22,6 +24,9 @@ public class UserController {
     @Resource
     private UserInfoService userInfoService;
 
+    @Resource
+    private LoginUserInfoService loginUserInfoService;
+
     @PostMapping("/add")
     @ApiOperation("添加用户")
     public BaseResponse<Boolean, ?> add(@RequestBody UserInfoVO vo) {
@@ -38,5 +43,11 @@ public class UserController {
     @ApiOperation("获取用户信息")
     public BaseResponse<List<UserInfoDTO>, ?> getUserInfo(UserInfoVO vo) {
         return BaseResponse.success(userInfoService.getUserInfo(vo));
+    }
+
+    @GetMapping("/get/by/token")
+    @ApiOperation("根据token获取用户信息")
+    public BaseResponse<LoginUserInfoDTO, ?> getUserInfoByToken() {
+        return BaseResponse.success(loginUserInfoService.getUserInfoByToken());
     }
 }

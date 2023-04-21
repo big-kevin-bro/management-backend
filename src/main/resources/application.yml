@@ -35,3 +35,7 @@ mybatis-plus:
       logic-delete-field: disable # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
+app:
+  rsa:
+    publicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC5PNZdI+B9hbF7g88eYDizocHC7usvj8fVm/oW8BzZy3yqUmjuShs4CHFlgJxiX7yUVOg8/0Ht+NTLZN8EnWWoGdbpIqE6e/dNG6q3I4etRJ+6XOjqyOlQ0fDcF+Y3l24m4BGXkDjStrnEv6fOAqZqzbk5GtufTgT7JvI2n410DwIDAQAB
+    privateKey: MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBALk81l0j4H2FsXuDzx5gOLOhwcLu6y+Px9Wb+hbwHNnLfKpSaO5KGzgIcWWAnGJfvJRU6Dz/Qe341Mtk3wSdZagZ1ukioTp7900bqrcjh61En7pc6OrI6VDR8NwX5jeXbibgEZeQONK2ucS/p84CpmrNuTka259OBPsm8jafjXQPAgMBAAECgYAQPxm+CYuC9treLm1YCLBwcNuBsVrHTSEFxyxkHqMpJwPEHH4/iBhjDbqEYIdWyXbMu7Wyw+CQcqaXQD2fNf7YXVBL+g+eK2bCqN6LpylvbBoimp6FgkLl9smoGgbP77q/qKcL7IOA3evSqT9YuCr5tNgLCSJhYu2bb9rqHBVXAQJBANDT5+m0/8ud6Ey1sljN+F4PxyzeDhgIcD7yyoR85ELfM7EClY9qTz8idoudH9A8ZmS3Y8oyQtHC3JrHO1c+fK8CQQDjFMMfG/aAYr5vDy7v6Pqqooj6MPrw/nCfH5wwlk9MPnQwuDk/uAFa4NrkrRCOh9zege19q5Cf7tGFplnslhahAkBaGiRlRTBdNYvGlVsXT/+K7jndFQ51tiZgMrfIxG5koBOYm2nWkGMS9Za6lJfmbDkt2abX1inYgcBXlAD5mr+HAkBvYjW7QqoMm2Kxcw8g2nRp0kPCBNhx8TwosQaZxoCq809mvlZGbOktPHHiDQm7/+RUuAJXzBmqeSgImGovZAdBAkAmaY+b/r4/5XaPOeF3Ko/h8YYsxpLEbeSSgrHK0FgepOYh4XfGzwm/EBTpE+ZKxCzxX0OX8MsUblmY7FSz281Y

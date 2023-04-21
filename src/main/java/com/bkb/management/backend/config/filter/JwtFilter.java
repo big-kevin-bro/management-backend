@@ -57,8 +57,6 @@ public class JwtFilter implements Filter {
             String password= userData.get("password").asString();
             // 拦截器 拿到用户信息，放到request中
             request.setAttribute("id", id);
-            request.setAttribute("userName", userName);
-            request.setAttribute("password", password);
             chain.doFilter(req, res);
         }
     }

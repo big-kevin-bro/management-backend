@@ -8,9 +8,7 @@ import com.bkb.management.backend.domain.vo.login.LoginUserVO;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import jakarta.annotation.Resource;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author big kevin bro
@@ -25,7 +23,7 @@ public class LoginController {
 
     @PostMapping("/up")
     @ApiOperation("用户注册")
-    public BaseResponse<Boolean, ?> signUp(LoginUserVO vo) {
+    public BaseResponse<Boolean, ?> signUp(@RequestBody LoginUserVO vo) {
         return loginUserInfoService.signUp(vo);
     }
 
@@ -42,5 +40,11 @@ public class LoginController {
         } else {
             return BaseResponse.fail("401", "登录密码错误");
         }
+    }
+
+    @GetMapping("/test")
+    @ApiOperation("rsa加密")
+    public BaseResponse<String, ?> test(@RequestParam("password") String password) {
+        return loginUserInfoService.test(password);
     }
 }

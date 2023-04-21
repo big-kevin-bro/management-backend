@@ -23,7 +23,7 @@ public class JwtUtil {
     /**
      * 密钥
      */
-    private static final String SECRET = "my_secret";
+    private static final String SECRET = "big_kevin_bro";
 
     /**
      * 过期时间，单位为秒
@@ -42,10 +42,8 @@ public class JwtUtil {
         return JWT.create()
                 // 添加头部
                 .withHeader(map)
-                // 可以将基本信息放到claims中
+                // 将userId放到claims中
                 .withClaim("id", loginUserInfo.getId())
-                .withClaim("userName", loginUserInfo.getUserName())
-                .withClaim("password", loginUserInfo.getPassword())
                 // 超时设置,设置过期的日期
                 .withExpiresAt(expireDate)
                 // 签发时间
@@ -58,7 +56,7 @@ public class JwtUtil {
      * 校验token并解析token
      */
     public static Map<String, Claim> verifyToken(String token) {
-        DecodedJWT jwt = null;
+        DecodedJWT jwt;
         try {
             JWTVerifier verifier = JWT.require(Algorithm.HMAC256(SECRET)).build();
             jwt = verifier.verify(token);
