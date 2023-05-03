@@ -5,10 +5,12 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.bkb.management.backend.business.login.service.LoginUserInfoService;
 import com.bkb.management.backend.business.rsa.service.UserRsaInfoService;
+import com.bkb.management.backend.config.exception.BusinessHintException;
 import com.bkb.management.backend.config.props.AppProps;
 import com.bkb.management.backend.config.props.RsaProps;
 import com.bkb.management.backend.config.utils.JwtUtil;
 import com.bkb.management.backend.config.utils.RsaUtils;
+import com.bkb.management.backend.constants.enums.BusinessExceptionEnum;
 import com.bkb.management.backend.domain.base.BaseResponse;
 import com.bkb.management.backend.domain.dto.login.LoginUserInfoDTO;
 import com.bkb.management.backend.domain.mapper.login.LoginUserInfoMapper;
@@ -49,14 +51,14 @@ public class LoginUserInfoServiceImpl extends ServiceImpl<LoginUserInfoMapper, L
         wrapper.eq(LoginUserInfoDO::getUserName, vo.getUserName());
         LoginUserInfoDO loginUserInfo = this.getOne(wrapper);
         if (loginUserInfo != null) {
-            return BaseResponse.fail("500", "用户名已存在");
+            throw BusinessHintException.error(BaseResponse.fail(BusinessExceptionEnum.INTERNAL_SERVER_ERROR.getCode(), "用户名已存在"));
         }
         loginUserInfo = new LoginUserInfoDO();
         loginUserInfo.setUserName(vo.getUserName());
         this.save(loginUserInfo);
         String password = this.passwordHandle(vo.getPassword(), loginUserInfo.getId());
         if (StringUtils.isBlank(password)) {
-            return BaseResponse.fail("500", "创建账号失败");
+            throw BusinessHintException.error(BaseResponse.fail(BusinessExceptionEnum.INTERNAL_SERVER_ERROR.getCode(), "创建账号失败"));
         }
         loginUserInfo.setPassword(password);
         return BaseResponse.success(this.updateById(loginUserInfo));
@@ -107,13 +109,13 @@ public class LoginUserInfoServiceImpl extends ServiceImpl<LoginUserInfoMapper, L
     public BaseResponse<String, ?> signIn(LoginUserVO vo) {
         LoginUserInfoDO loginUserInfo = this.getByUserName(vo.getUserName());
         if (loginUserInfo == null) {
-            return BaseResponse.fail("401", "用户未注册");
+            throw BusinessHintException.error(BaseResponse.fail(BusinessExceptionEnum.HTTP_UNAUTHORIZED.getCode(), "用户未注册"));
         }
         RsaProps rsaProps = appProps.getRsa();
         // 参数密码解密
         String passwordParam = RsaUtils.decrypt(vo.getPassword(), rsaProps.getPrivateKey());
         if (StringUtils.isBlank(passwordParam)) {
-            return BaseResponse.fail("500", "登录失败");
+            throw BusinessHintException.error(BaseResponse.fail(BusinessExceptionEnum.INTERNAL_SERVER_ERROR.getCode(), "登录失败"));
         }
         // 数据库密码解密
         String passwordDb = this.getPasswordDb(loginUserInfo.getId(), loginUserInfo.getPassword());
@@ -121,7 +123,7 @@ public class LoginUserInfoServiceImpl extends ServiceImpl<LoginUserInfoMapper, L
             String token = JwtUtil.createToken(loginUserInfo);
             return BaseResponse.success(token);
         } else {
-            return BaseResponse.fail("401", "登录密码错误");
+            throw BusinessHintException.error(BaseResponse.fail(BusinessExceptionEnum.HTTP_UNAUTHORIZED.getCode(), "登录密码错误"));
         }
     }
 

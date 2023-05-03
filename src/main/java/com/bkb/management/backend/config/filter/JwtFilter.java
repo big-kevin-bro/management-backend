@@ -1,7 +1,10 @@
 package com.bkb.management.backend.config.filter;
 
+import cn.hutool.json.JSONUtil;
 import com.auth0.jwt.interfaces.Claim;
 import com.bkb.management.backend.config.utils.JwtUtil;
+import com.bkb.management.backend.constants.enums.BusinessExceptionEnum;
+import com.bkb.management.backend.domain.base.BaseResponse;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,7 +24,7 @@ import java.util.Map;
 public class JwtFilter implements Filter {
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
 
     }
 
@@ -43,13 +46,17 @@ public class JwtFilter implements Filter {
         // Except OPTIONS, other request should be checked by JWT
         else {
             if (token == null) {
-                response.getWriter().write("没有token！");
+                String errorMessage = JSONUtil.toJsonStr(
+                        BaseResponse.fail(BusinessExceptionEnum.HTTP_UNAUTHORIZED.getCode(), "token为空"));
+                response.getWriter().write(errorMessage);
                 return;
             }
 
             Map<String, Claim> userData = JwtUtil.verifyToken(token);
             if (userData == null) {
-                response.getWriter().write("token不合法！");
+                String errorMessage = JSONUtil.toJsonStr(
+                        BaseResponse.fail(BusinessExceptionEnum.HTTP_UNAUTHORIZED.getCode(), "token不合法"));
+                response.getWriter().write(errorMessage);
                 return;
             }
             String userId = userData.get("id").asString();
